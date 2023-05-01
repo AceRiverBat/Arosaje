@@ -30,8 +30,27 @@ const Details = ({ route }) => {
     fetchUserRole();
   }, []);
 
+  const handleGarder = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/plants/${plant.id}/guardian/store`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          guardian_id: userId,
+        }),
+      });
+      const data = await response.json();
+      alert('Vous êtes maintenant le gardien de cette plante');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderCommentButton = () => {
-    if (userRole === "botaniste") {
+    if (userRole === "botaniste" && plant.owner_id != userId) {
       return (
         <TouchableOpacity style={styles.btn} onPress={() => console.log("Add comment")}>
           <Text style={styles.btnText}>Add Comment</Text>
@@ -41,9 +60,18 @@ const Details = ({ route }) => {
       return null;
     }
   };
+  const renderGuardButton = () => {
+    if (userRole === "utilisateur" && plant.guardian_id != userId) {
+      return (
+        <TouchableOpacity style={styles.btnGard} onPress={handleGarder}>
+          <Text style={styles.btnText}>Garder</Text>
+        </TouchableOpacity>
+      );
+    } 
+  };
 
   return (
-    <View>
+    <View style={styles.viewContainer}>
       <View style={styles.iconContainer}>
         <TouchableOpacity onPress={handleBackPress}>
           <Ionicons style={styles.icon} name='arrow-back-circle' size={50} color="#0B7143" />
@@ -54,7 +82,7 @@ const Details = ({ route }) => {
 
       <View style={styles.container}>
         <Text style={styles.title} >{plant.title}</Text>
-        <Text style={styles.price}>{plant.price}</Text>
+        <Text style={styles.price}>{plant.price}€</Text>
       </View>
 
       <ScrollView>
@@ -62,10 +90,9 @@ const Details = ({ route }) => {
       </ScrollView>
 
       <View style={styles.header}>
+
         <View style={styles.btnOption}>
-          <TouchableOpacity style={styles.btnGard} onPress={() => console.log("Garder")}>
-            <Text style={styles.btnText}>Garder</Text>
-          </TouchableOpacity>
+          {renderGuardButton()}
           {renderCommentButton()}
         </View>
       </View>
@@ -79,6 +106,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     backgroundColor: '#fff',
     padding: 10,
+  },
+  viewContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
   icon: {
     alignSelf: 'flex-start',

@@ -39,7 +39,7 @@ const App = () => {
                 },
               })}
               tabBarOptions={{
-                activeTintColor: 'tomato',
+                activeTintColor: "#0B7143",
                 inactiveTintColor: 'gray',
               }}
               initialParams={{ token: route.params }}
@@ -48,7 +48,7 @@ const App = () => {
               {() => <Home token={route.params.token} />}
               </Tab.Screen>
               <Tab.Screen name="Ad" options={{ headerShown: false }}>{() => <Ad token={route.params.token} />}</Tab.Screen>
-              <Tab.Screen name="Account" options={{ headerShown: false }}>{() => <Account token={route.params.token} />}
+              <Tab.Screen name="Account" options={{ headerShown: false }}>{() => <Account token={route.params.token}/>}
               </Tab.Screen>
 
             </Tab.Navigator>

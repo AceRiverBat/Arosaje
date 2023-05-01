@@ -28,12 +28,11 @@ const Login = ({ navigation }) => {
           }),
         });
         const data = await response.json();
-        console.log(data);
-        // If login is successful, navigate to Home screen
+        
         if (response.ok) {
           navigation.navigate('Main', { token: data.access_token });
         } else {
-          alert('Invalid email or password');
+          alert('Email ou Mot de passe invalide');
         }
       } catch (error) {
         console.error(error);
@@ -93,7 +92,7 @@ const Login = ({ navigation }) => {
       <View style={styles.inputView}>
         <MaterialIcons style={styles.icon} name={"vpn-key"} size={20} color="gray" />
         <TextInput
-          placeholder="Password"
+          placeholder="Mot de passe"
           value={password}
           onChangeText={(text) => setPassword(text)}
           secureTextEntry
@@ -112,10 +111,10 @@ const Login = ({ navigation }) => {
       </View>
 
       <View style={styles.logoContainer}>
-        <Ionicons style={styles.icon} name='logo-instagram' size={40} color="black" />
-        <MaterialIcons style={styles.icon} name={"facebook"} size={40} color="black" />
-        <Ionicons style={styles.icon} name='logo-twitter' size={40} color="black" />
-        <Ionicons style={styles.icon} name='logo-google' size={40} color="black" />
+        <Ionicons style={styles.iconS} name='logo-instagram' size={40} color="black" />
+        <MaterialIcons style={styles.iconS} name={"facebook"} size={40} color="black" />
+        <Ionicons style={styles.iconS} name='logo-twitter' size={40} color="black" />
+        <Ionicons style={styles.iconS} name='logo-google' size={40} color="black" />
       </View>
 
       <View style={styles.socialContainer}>
@@ -143,8 +142,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     flex: 1,
-    width: "100%",
     margin: 10,
+  },
+  iconS: {
+    margin: 20,
   },
   errorText: {
     color: 'red',
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    padding: 10,
+    flex: 2,
   },
 });
 

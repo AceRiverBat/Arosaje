@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
-const Home = ({ route, token}) => {
+const Home = ({ route, token }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [plants, setPlants] = useState([]);
 
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [userId, setUserId] = useState(null);
 
   const fetchUser = async () => {
@@ -25,11 +26,11 @@ const Home = ({ route, token}) => {
       console.error(error);
     }
   };
-  
+
   useEffect(() => {
     fetchUser();
   }, [token]);
-  
+
   const fetchPlants = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/plants`, {
@@ -41,16 +42,16 @@ const Home = ({ route, token}) => {
       });
       const data = await response.json();
       setPlants(data);
-
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchPlants();
-  }, [token]);
+    if (isFocused) {
+      fetchPlants();
+    }
+  }, [isFocused, token]);
 
   const handleSearch = async () => {
     try {
@@ -69,7 +70,7 @@ const Home = ({ route, token}) => {
   };
 
   const handlePlantPress = (plant) => {
-   navigation.navigate('Details', { plant, userId: userId, token: token});
+    navigation.navigate('Details', { plant, userId: userId, token: token });
   };
 
   const renderPlantCard = ({ item }) => {
@@ -77,9 +78,9 @@ const Home = ({ route, token}) => {
       <TouchableOpacity onPress={() => handlePlantPress(item)}>
         <View>
           <Image source={{ uri: item.image }} style={styles.image} />
-          <Text>{item.name}</Text>
+          <Text>{item.title}</Text>
           <Text>{item.description}</Text>
-          <Text>{item.price}</Text>
+          <Text>{item.price}€</Text>
         </View>
       </TouchableOpacity>
     );
@@ -100,16 +101,16 @@ const Home = ({ route, token}) => {
         renderItem={renderPlantCard}
         keyExtractor={(item) => item.id.toString()}
       />
-</ScrollView>  );
+    </ScrollView>);
 
 };
 
 const styles = StyleSheet.create({
 
   image: {
-      width: 200,
-      height: 200,
-      marginBottom: 8,
+    width: 200,
+    height: 200,
+    marginBottom: 8,
   },
 
 });

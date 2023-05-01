@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     alignSelf: 'center',
+    marginBottom:15,
   },
   logo: {
     width: 100,
