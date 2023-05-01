@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Home = ({ route, token}) => {
@@ -32,10 +32,17 @@ const Home = ({ route, token}) => {
   
   const fetchPlants = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/plants`);
+      const response = await fetch(`http://127.0.0.1:8000/api/plants`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setPlants(data);
 
+      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -43,11 +50,17 @@ const Home = ({ route, token}) => {
 
   useEffect(() => {
     fetchPlants();
-  }, []);
+  }, [token]);
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/plants/search?query=${query}`);
+      const response = await fetch(`http://127.0.0.1:8000/api/plants/search?query=${query}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setResults(data);
     } catch (error) {
@@ -56,7 +69,7 @@ const Home = ({ route, token}) => {
   };
 
   const handlePlantPress = (plant) => {
-   navigation.navigate('Details', { plant, userId: userId});
+   navigation.navigate('Details', { plant, userId: userId, token: token});
   };
 
   const renderPlantCard = ({ item }) => {
@@ -75,7 +88,7 @@ const Home = ({ route, token}) => {
   const plantsToDisplay = query ? results : plants;
 
   return (
-    <View>
+    <ScrollView>
       <TextInput
         placeholder="Rechercher une plante..."
         value={query}
@@ -87,8 +100,7 @@ const Home = ({ route, token}) => {
         renderItem={renderPlantCard}
         keyExtractor={(item) => item.id.toString()}
       />
-    </View>
-  );
+</ScrollView>  );
 
 };
 

@@ -1,143 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+import axios from 'axios';
 
 const Ad = ({ token }) => {
-    const [user, setUser] = useState(null);
-
     const [image, setImage] = useState(null);
-    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/api/me', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setUser(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchUser();
-    }, [token]);
-
-    const handleChoosePhoto = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const pickImage = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-            alert('Permission pour accèder à la galerie requise');
+            console.log('Permission to access location was denied');
             return;
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            quality: 0.5,
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
             aspect: [4, 3],
-            base64: true,
+            quality: 1,
         });
 
-        if (result.cancelled) {
-            return;
+        if (!result.cancelled) {
+            setImage(result.uri);
         }
-
-        if (result.fileSize && result.fileSize > 2048 * 1024) {
-            alert('La taille de l\'image ne doit pas dépasser 2 Mo.');
-            return;
-        }
-
-        setImage(result.uri);
     };
 
-    const handleAddPlant = async () => {
+    const formData = new FormData();
+    formData.append('image', {
+        uri: image,
+        name: 'image.jpg',
+        type: 'image/jpeg'
+    });
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+
+    const handleSubmit = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/users/${user.id}/plants`, {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    title: name,
-                    image: image,
-                    description: description,
-                    price: price,
-                }),
-                
-            });
-            if (response.status !== 200) {
-                throw new Error('Failed to add plant');
-            }
-            const data = await response.text();
-            const parsedData = JSON.parse(data);
-            console.log('Ad added:', parsedData);
+          // Create a new FormData object with the image, title, description, and price
+          const formData = new FormData();
+          formData.append('image', {
+            uri: image,
+            name: 'image.jpg',
+            type: 'image/jpeg'
+          });
+          formData.append('title', title);
+          formData.append('description', description);
+          formData.append('price', price);
+      
+          // Upload the form data to the server
+          const response = await fetch('http://127.0.0.1:8000/api/plants/store', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            body: formData
+          });
         } catch (error) {
-            console.error(error);
+          console.error(error);
+          Alert.alert('Error', 'Failed to create plant!');
         }
-    };       
+      };      
 
     return (
-        <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                {image && (
-                    <Image source={{ uri: image }} style={styles.image} />
-                )}
-                <Button title="Choisir une photo" onPress={handleChoosePhoto} />
-            </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Titre"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Description"
-                value={description}
-                onChangeText={setDescription}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Prix"
-                value={price}
-                onChangeText={setPrice}
-            />
-            <Button title="Ajouter l'annonce" onPress={handleAddPlant} />
+        <View>
+            <Text>Title:</Text>
+            <TextInput value={title} onChangeText={setTitle} />
+
+            <Text>Description:</Text>
+            <TextInput value={description} onChangeText={setDescription} />
+
+            <Text>Price:</Text>
+            <TextInput value={price} onChangeText={setPrice} />
+
+            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+
+            <Button title="Pick an image" onPress={pickImage} />
+
+            <Button title="Create" onPress={handleSubmit} />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    image: {
-        width: 200,
-        height: 200,
-        marginBottom: 8,
-    },
-    input: {
-        marginBottom: 16,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-    },
-});
 
 export default Ad;

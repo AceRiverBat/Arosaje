@@ -63,6 +63,7 @@ const Account = ({ token }) => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     firstName,
@@ -74,12 +75,8 @@ const Account = ({ token }) => {
             });
             const data = await response.json();
             setUser(data.user);
-
-            console.log(data);
         } catch (error) {
             console.error(error);
-
-            console.log(user);
         }
     };
 
@@ -142,15 +139,22 @@ const Account = ({ token }) => {
             )}
 
             <Text style={styles.title}>Your Plants</Text>
-            {plants.map((plant) => (
-                <View key={plant.id} style={styles.plant}>
-                    <Image source={{ uri: plant.image }} style={styles.image} />
-                    <Text>{plant.name}</Text>
-                    <Text>{plant.description}</Text>
-                    <Text>{plant.price}</Text>
-                    <Button title="Delete" onPress={() => handleDeletePlant(plant.id)} />
-                </View>
-            ))}
+            {plants ? (
+                <>
+                    <Text style={styles.title}>Your Plants</Text>
+                    {plants.map((plant) => (
+                        <View key={plant.id} style={styles.plant}>
+                            <Image source={{ uri: plant.image }} style={styles.image} />
+                            <Text>{plant.name}</Text>
+                            <Text>{plant.description}</Text>
+                            <Text>{plant.price}</Text>
+                            <Button title="Delete" onPress={() => handleDeletePlant(plant.id)} />
+                        </View>
+                    ))}
+                </>
+            ) : (
+                <Text style={styles.title}>You don't have any plants yet.</Text>
+            )}
 
         </View>
     );
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 8,
     },
-  
+
 });
 
 export default Account;

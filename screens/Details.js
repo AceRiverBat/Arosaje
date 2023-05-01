@@ -2,19 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Details = ({ route }) => {
+const Details = ({ route}) => {
   const { plant } = route.params;
   const navigation = useNavigation();
   const [userRole, setUserRole] = useState(null);
   const { userId } = route.params;
-
+  const { token } = route.params;
   const handleBackPress = () => {
     navigation.goBack();
   };
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/role`);
+      const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/role`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setUserRole(data.role);
     };
