@@ -9,48 +9,48 @@ import Plants from "../components/Plants";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 
-export default function Account({token}) {
-    const [ShowInfo, setShowInfo] = useState(true);
-    const [ShowPlante, setShowPlante] = useState(false);
-    const [ShowHisto, setShowHisto] = useState(false);
+export default function Account({ token }) {
+  const [ShowInfo, setShowInfo] = useState(true);
+  const [ShowPlante, setShowPlante] = useState(false);
+  const [ShowHisto, setShowHisto] = useState(false);
 
-    return (
+  return (
     <>
-        <View style={styles.container}>
-        <AccountNav 
-        token = {token}
-        onPressinfo={() => {setShowInfo(true); setShowPlante(false); setShowHisto(false)}} 
-        onPressplante={() =>{setShowInfo(false); setShowPlante(true); setShowHisto(false)}}
-        onPresshisto={() =>{setShowInfo(false); setShowPlante(false); setShowHisto(true)}}
+      <View style={styles.container}>
+        <AccountNav
+          token={token}
+          onPressinfo={() => { setShowInfo(true); setShowPlante(false); setShowHisto(false) }}
+          onPressplante={() => { setShowInfo(false); setShowPlante(true); setShowHisto(false) }}
+          onPresshisto={() => { setShowInfo(false); setShowPlante(false); setShowHisto(true) }}
         />
         {
-            ShowInfo == true ?
+          ShowInfo == true ?
             <View>
-                <UserInfo token = {token}/>
+              <UserInfo token={token} />
             </View>
             :
             ShowPlante == true ?
 
-            <>
-            <Plants token = {token}/>
-            </>
-            :
-            ShowHisto == true ?
-            <>
-            <History token = {token}/>
-            </>
-            :
-            <View>
-            </View>
+              <>
+                <Plants token={token} />
+              </>
+              :
+              ShowHisto == true ?
+                <>
+                  <History token={token} />
+                </>
+                :
+                <View>
+                </View>
         }
-        </View>
-</>
-    );
-  }
+      </View>
+    </>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex:2,
+    flex: 2,
     backgroundColor: '#ffffff'
   },
-  });
+});
