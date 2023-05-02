@@ -50,24 +50,39 @@ const Details = ({ route }) => {
   };
 
   const renderCommentButton = () => {
-    if (userRole === "botaniste" && plant.owner_id != userId) {
-      return (
-        <TouchableOpacity style={styles.btn} onPress={() => console.log("Add comment")}>
-          <Text style={styles.btnText}>Add Comment</Text>
-        </TouchableOpacity>
-      );
+    if (plant.owner_id != userId) {
+      if (userRole === "botaniste") {
+        return (
+          <TouchableOpacity style={styles.btn} onPress={() => console.log("Add comment")}>
+            <Text style={styles.btnText}>Add Comment</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        return null;
+      }
     } else {
-      return null;
+      return (
+        <Text >Vous êtes le propriétaire de cette plante</Text>
+      );
     }
+
   };
   const renderGuardButton = () => {
-    if (userRole === "utilisateur" && plant.guardian_id != userId) {
-      return (
-        <TouchableOpacity style={styles.btnGard} onPress={handleGarder}>
-          <Text style={styles.btnText}>Garder</Text>
-        </TouchableOpacity>
-      );
-    } 
+    if (plant.owner_id != userId) {
+      if (plant.guardian_id != userId) {
+        if (userRole === "utilisateur") {
+          return (
+            <TouchableOpacity style={styles.btnGard} onPress={handleGarder}>
+              <Text style={styles.btnText}>Garder</Text>
+            </TouchableOpacity>
+          );
+        }
+      } else {
+        return (
+          <Text>Vous êtes le gardien</Text>
+        );
+      }
+    }
   };
 
   return (
@@ -82,7 +97,7 @@ const Details = ({ route }) => {
 
       <View style={styles.container}>
         <Text style={styles.title} >{plant.title}</Text>
-        <Text style={styles.price}>{plant.price}€</Text>
+        <Text style={styles.price}>{plant.price}€ /jour</Text>
       </View>
 
       <ScrollView>

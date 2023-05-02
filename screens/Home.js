@@ -84,7 +84,7 @@ const Home = ({ route, token }) => {
           <View style={styles.adTextContainer}>
             <Text style={styles.adTitle}>{item.title}</Text>
             <Text style={styles.adTitleDescription}>{item.description}</Text>
-            <Text style={styles.adPrice}>{item.price}€</Text>
+            <Text style={styles.adPrice}>{item.price}€ /jour</Text>
           </View>
         </View>
       </TouchableOpacity>
