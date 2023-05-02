@@ -80,7 +80,6 @@ const Signup = ({ navigation }) => {
                     }),
                 });
                 const data = await response.json();
-                console.log(data);
                 navigation.navigate('Login');
             } catch (error) {
                 console.error(error);
