@@ -9,6 +9,8 @@ import Signup from './screens/Signup';
 import Account from './screens/Account';
 import Ad from './screens/Ad';
 import Details from './screens/Details';
+import Politique from './components/Politique';
+import TermsAndConditionsPage from './components/TermsAndConditionsPage'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,6 +22,8 @@ const App = () => {
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
         <Stack.Screen name="Details" component={Details} options={{ headerShown: false }} />
+        <Stack.Screen name="Politique" component={Politique} options={{ headerShown: false }} />
+        <Stack.Screen name="TermsAndConditionsPage" component={TermsAndConditionsPage} options={{ headerShown: false }} />
         <Stack.Screen name="Main" options={{ headerShown: false }}>
           {({ route }) => (
             <Tab.Navigator

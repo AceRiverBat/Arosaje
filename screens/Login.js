@@ -28,7 +28,7 @@ const Login = ({ navigation }) => {
           }),
         });
         const data = await response.json();
-        
+
         if (response.ok) {
           navigation.navigate('Main', { token: data.access_token });
         } else {
@@ -124,6 +124,19 @@ const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.PolCon}>
+        <View style={styles.policyContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Politique')}>
+            <Text style={styles.policyText}>Politique de confidentialité</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.policyContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('TermsAndConditionsPage')}>
+            <Text style={styles.policyText}>Conditions générales d'utilisation</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -134,6 +147,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  PolCon: {
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  policyContainer: {
+    marginTop: 20,
+  },
+  policyText: {
+    color: 'gray',
   },
   image: {
     width: 150,
